@@ -130,6 +130,15 @@ const actions = {
       return e.response;
     }
   },
+  async setPatientID({ commit }, payload) {
+    try {
+      const response = await api.get(payload);
+      commit("setObjectPatient", response.data);
+    } catch (e) {
+      return e.response;
+    }
+    commit("setPatientID", payload);
+  },
   async postAllergy({ commit }, payload) {
     console.log(commit);
     try {
