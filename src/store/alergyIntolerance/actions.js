@@ -5,7 +5,7 @@ const actions = {
       void api
         .getRequest("allergyIntolerance/patient/" + payload)
         .then((response) => {
-          commit("setAlergias", response.data).data;
+          commit("setAlergias", response.data.data);
         });
     } else {
       commit("setAlergias", []);

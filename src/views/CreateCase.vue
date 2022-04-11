@@ -1570,23 +1570,23 @@ export default {
           showCelulas.value = true;
           void store.dispatch(
             "patient/setPatientID",
-            postBundle.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location
           );
           void store.dispatch(
             "alergyIntolerance/setAlergias",
-            postBundle.data.entry[0].response.location.split("/")[1]
+            postBundle.data.data.entry[0].response.location.split("/")[1]
           );
           void store.dispatch(
             "questionnaireResponse/setQuestionnaireRespoonse",
-            postBundle.data.entry[1].response.location
+            postBundle.data.data.entry[1].response.location
           );
 
           LocalStorage.set(
             "PatientID",
-            postBundle.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location
           );
 
-          patientID.value = postBundle.data.entry[0].response.location;
+          patientID.value = postBundle.data.data.entry[0].response.location;
           $q.notify({
             color: "green-4",
             textColor: "white",
