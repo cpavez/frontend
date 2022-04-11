@@ -1,0 +1,57 @@
+{
+  "LANG": {
+    "LABEL": {
+      "CREATE": "Create",
+      "SEARCH": "Search",
+      "RESET": "Reset"
+    }
+  },
+  "failed": "Action failed",
+  "success": "Action was successful",
+  "lang": "Languages",
+  "setting": "Setting",
+  "logout": "Logout",
+  "notifications": "Notifications",
+  "privacy": "Privacy",
+  "terms": "Terms",
+  "supports": "Supports",
+  "copyright": "All rights reserved",
+  "menu":{
+    "home":"Home",
+    "createCase":"Create Case",
+    "trackingCase":"Case Tracking",
+    "solve":"Solve",
+    "myCases":"My Cases",
+    "opinionRequest":"Opinion Request",
+    "solveQuery":"Solve Query",
+    "baseDownload":"Base Download",
+    "baseSigte":"Sigte Base",
+    "fallow":"Fallow",
+    "someFallow":"Some Fallow",
+    "record":"Record",
+    "associateEstablishment":"Associate Establishment",
+    "projects":"Projects",
+    "derivationNetwork":"Derivation Network",
+    "assignmentParameters":"Assignment Parameters",
+    "specialistHour":"Specialist Hour",
+    "changeAssignment":"Change Assignment",
+    "roles":"Roles",
+    "privileges":"Privileges"
+  },
+  "person" : {
+    "searchPatient": "Search Patient",
+    "solveCase": "Solve Case",
+    "trackingCase": "Tracking Case",
+    "MysolveCase": "My Solve Case"
+  },
+  "project" : {
+    "cellList": "Cell List",
+    "dermatology": "Dermatology",
+    "diabetes": "Diabetes",
+    "nephrology": "Nephrology",
+    "diabetic_foot": "Diabetic Foot",
+    "orthodontics": "Orthodontics",
+    "oralPathology": "Oral Pathology",
+    "geriatrics": "Geriatrics"
+  }
+}
