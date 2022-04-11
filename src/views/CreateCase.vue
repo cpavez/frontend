@@ -1583,10 +1583,11 @@ export default {
 
           LocalStorage.set(
             "PatientID",
-            postBundle.data.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location.split("/")[1]
           );
 
-          patientID.value = postBundle.data.data.entry[0].response.location;
+          patientID.value =
+            postBundle.data.data.entry[0].response.location.split("/")[1];
           $q.notify({
             color: "green-4",
             textColor: "white",
