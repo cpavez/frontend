@@ -1,0 +1,57 @@
+{
+  "LANG": {
+    "LABEL": {
+      "CREATE": "Crear",
+      "SEARCH": "Buscar",
+      "RESET": "Limpiar"
+    }
+  },
+  "failed": "Acción fallida",
+  "success": "La acción fue exitosa",
+  "lang": "Idioma",
+  "setting": "Configuración",
+  "logout": "Salir",
+  "notifications": "Notificaciones",
+  "privacy": "Privacidad",
+  "terms": "Términos",
+  "supports": "Soporte",
+  "copyright": "Todos los derechos reservados ",
+  "menu":{
+    "home":"Inicio",
+    "createCase":"Crear Caso",
+    "trackingCase":"Seguimiento Caso",
+    "solve":"Resolver",
+    "myCases":"Mis Casos",
+    "opinionRequest":"Solicitud de Opinión",
+    "solveQuery":"Resolver Consulta",
+    "baseDownload":"Descargar Base",
+    "baseSigte":"Base Sigte",
+    "fallow":"Seguimiento",
+    "someFallow":"Seguimiento Some",
+    "record":"Historial",
+    "associateEstablishment":"Asociar Establecimiento",
+    "projects":"Proyectos",
+    "derivationNetwork":"Red Derivación",
+    "assignmentParameters":"Parámetros de Asignación",
+    "specialistHour":"Specialist Hour",
+    "changeAssignment":"Cambio Asignación",
+    "roles":"Roles",
+    "privileges":"Privilegios"
+  },
+  "person" : {
+    "searchPatient": "Buscar Paciente",
+    "solveCase": "Resolver Caso",
+    "trackingCase": "Seguimiento Casos",
+    "MysolveCase": "Mis Casos Resueltos"
+  },
+  "project" : {
+    "cellList": "Lista Células",
+    "dermatology": "Dermatología",
+    "diabetes": "Diabetes",
+    "nephrology": "Nefrología",
+    "diabetic_foot": "Pie Diabético",
+    "orthodontics": "Ortodoncia",
+    "oralPathology": "Patología Oral",
+    "geriatrics": "Geriatría"
+  }
+}
