@@ -11,30 +11,30 @@ const actions = {
     });
   },
   setQuestionnaireExamenFisico({ commit }, payload) {
-    void api.get("Questionnaire/" + payload).then((response) => {
-      commit("setQuestionnaireExamenFisico", response.data);
+    void api.getRequest("Questionnaire/" + payload).then((response) => {
+      commit("setQuestionnaireExamenFisico", response.data.data);
     });
   },
   setQuestionnaireAntecedentes({ commit }, payload) {
-    void api.get("Questionnaire/" + payload).then((response) => {
-      commit("setQuestionnaireAntecedentes", response.data);
+    void api.getRequest("Questionnaire/" + payload).then((response) => {
+      commit("setQuestionnaireAntecedentes", response.data.data);
     });
   },
   setQuestionnaireInterconsultaDermatologia({ commit }, payload) {
-    void api.get("Questionnaire/" + payload).then((response) => {
-      commit("setQuestionnaireInterconsultaDermatologia", response.data);
+    void api.getRequest("Questionnaire/" + payload).then((response) => {
+      commit("setQuestionnaireInterconsultaDermatologia", response.data.data);
     });
   },
   setQuestionnaireAnexos({ commit }, payload) {
-    void api.get("Questionnaire/" + payload).then((response) => {
-      commit("setQuestionnaireAnexos", response.data);
+    void api.getRequest("Questionnaire/" + payload).then((response) => {
+      commit("setQuestionnaireAnexos", response.data.data);
     });
   },
   async getQuestionnaireForm({ commit }, payload) {
     console.log(commit);
     try {
-      const response = await api.get("Questionnaire/" + payload);
-      return response.data;
+      const response = await api.getRequest("Questionnaire/" + payload);
+      return response.data.data;
     } catch (e) {
       return e.response;
     }
@@ -42,22 +42,11 @@ const actions = {
   async getQuestionnaireResponse({ commit }, payload) {
     console.log(commit);
     try {
-      const response = await api.get(payload);
-      return response;
+      const response = await api.getRequest("questionnaire/" + payload);
+      return response.data;
     } catch (e) {
       return e.response;
     }
-  },
-  postQuestionnaire({ commit }, payload) {
-    console.log(commit);
-    void api
-      .post("QuestionnaireResponse", payload)
-      .then((response) => {
-        return response;
-      })
-      .catch(function (error) {
-        return error.response;
-      });
   },
 };
 

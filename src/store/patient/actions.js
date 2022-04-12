@@ -1,5 +1,16 @@
 import api from "../../config/axios";
 const actions = {
+  postPatient({ commit }, payload) {
+    console.log(commit);
+    void api
+      .post("Patient", payload)
+      .then((response) => {
+        return response;
+      })
+      .catch(function (error) {
+        return error.response;
+      });
+  },
   async postBundle({ commit }, payload) {
     console.log(commit);
     try {
@@ -11,7 +22,7 @@ const actions = {
   },
   async setPatientID({ commit }, payload) {
     try {
-      const response = await api.get(payload);
+      const response = await api.getRequest("patients/" + payload);
       commit("setObjectPatient", response.data);
     } catch (e) {
       return e.response;

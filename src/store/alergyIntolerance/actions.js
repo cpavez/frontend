@@ -11,6 +11,24 @@ const actions = {
       commit("setAlergias", []);
     }
   },
+  async postAllergy({ commit }, payload) {
+    console.log(commit);
+    try {
+      const response = await api.postRequest("AllergyIntolerance", payload);
+      return response;
+    } catch (e) {
+      return e.response;
+    }
+  },
+  async putResource({ commit }, payload) {
+    console.log(commit);
+    try {
+      const response = await api.putRequest(payload.fullUrl, payload.resource);
+      return response;
+    } catch (e) {
+      return e.response;
+    }
+  },
 };
 
 export default actions;

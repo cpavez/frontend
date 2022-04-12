@@ -2,8 +2,8 @@ import api from "../../config/axios";
 const actions = {
   async setComposition({ commit }, payload) {
     try {
-      const response = await api.get("Composition/" + payload);
-      commit("setComposition", response.data);
+      const response = await api.getRequest("Composition/" + payload);
+      commit("setComposition", response.data.data);
     } catch (e) {
       commit("setComposition", []);
     }
@@ -11,8 +11,8 @@ const actions = {
   async getComposition({ commit }, payload) {
     console.log(commit);
     try {
-      const response = await api.get("Composition?" + payload);
-      return response;
+      const response = await api.getRequest("Composition?" + payload);
+      return response.data;
     } catch (e) {
       return e.response;
     }

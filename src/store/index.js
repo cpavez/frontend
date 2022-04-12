@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import questionnairePatient from "./questionnairePatient";
+import observation from "./observation";
 import auth from "./auth";
 import questionnaire from "./questionnaire";
 import questionnaireResponse from "./questionnaireResponse";
@@ -14,7 +14,7 @@ export default createStore({
   mutations: {},
   actions: {},
   modules: {
-    questionnairePatient,
+    observation,
     questionnaire,
     questionnaireResponse,
     composition,

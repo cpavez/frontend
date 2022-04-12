@@ -1168,11 +1168,6 @@ export default {
                 message: "El run no es Valido",
               });
             } else {
-              /*const arrQuestionnaireResponse = await store.dispatch(
-                "questionnaireResponse/getQuestionnaireResponsePatient",
-                modelPatientVariable.value[e].toUpperCase() +
-                  "&questionnaire=http://192.168.60.123:8080/fhir/Questionnaire/1341"
-              );*/
               const arrQuestionnaireResponse = await store.dispatch(
                 "questionnaireResponse/findQuestionnaireResponseAdmisionByPatientIdentifir",
                 modelPatientVariable.value[e].toUpperCase()
@@ -1568,9 +1563,10 @@ export default {
         } else {
           $q.loading.hide();
           showCelulas.value = true;
+          console.log(postBundle);
           void store.dispatch(
             "patient/setPatientID",
-            postBundle.data.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location.split("/")[1]
           );
           void store.dispatch(
             "alergyIntolerance/setAlergias",
@@ -1578,7 +1574,7 @@ export default {
           );
           void store.dispatch(
             "questionnaireResponse/setQuestionnaireRespoonse",
-            postBundle.data.data.entry[1].response.location
+            postBundle.data.data.entry[1].response.location.split("/")[1]
           );
 
           LocalStorage.set(

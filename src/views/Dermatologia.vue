@@ -95,16 +95,7 @@
 </template>
 
 <script>
-import {
-  computed,
-  defineProps,
-  onBeforeMount,
-  onMounted,
-  onServerPrefetch,
-  ref,
-  watch,
-  watchEffect,
-} from "vue";
+import { computed, onBeforeMount, ref, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { Loading, LocalStorage, QSpinnerDots, uid, useQuasar } from "quasar";
@@ -152,7 +143,7 @@ export default {
 
     watchEffect(async () => {
       if (LocalStorage.getItem("PatientID") === "") {
-        void store.dispatch("questionnairePatient/setComposition", "");
+        void store.dispatch("composition/setComposition", "");
         $q.notify({
           color: "negativa",
           textColor: "white",
@@ -161,23 +152,20 @@ export default {
         });
         router.push({ name: "createCase" });
       } else {
+        void store.dispatch("patient/setPatientID", patientString.value);
         void store.dispatch(
-          "questionnairePatient/setPatientID",
-          patientString.value
-        );
-        void store.dispatch(
-          "questionnairePatient/setAlergias",
-          "?patient=" + patientString.value.replace("Patient/", "")
+          "alergyIntolerance/setAlergias",
+          patientString.value.replace("Patient/", "")
         );
       }
 
       if (compositionID.value != "") {
         void (await store.dispatch(
-          "questionnairePatient/setComposition",
+          "composition/setComposition",
           compositionID.value
         ));
         const composition = await computed(
-          () => store.getters["questionnairePatient/getComposition"]
+          () => store.getters["composition/getComposition"]
         );
         if (composition) {
           composition.value.section.forEach((section, index) => {
@@ -185,25 +173,25 @@ export default {
               case "Exámen Físico":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireExamenFisicoResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Antecedentes":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireAntecedentesResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Interconsulta":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireInterconsultaDermatologiaResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Anexos":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireAnexosResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
             }
@@ -236,6 +224,8 @@ export default {
       const uuidAnexosResponse = "urn:uuid:" + uid();
       const uuidComposition = "urn:uuid:" + uid();
 
+      console.log(examenFisico.ExamenFisico);
+
       let object = {
         resourceType: "Bundle",
         type: "transaction",
@@ -256,7 +246,7 @@ export default {
             request: {
               method: examenFisicoResponse ? "PUT" : "POST",
               url: examenFisicoResponse
-                ? examenFisicoResponse
+                ? "QuestionnaireResponse/" + examenFisicoResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -278,7 +268,7 @@ export default {
             request: {
               method: antecedentesResponse ? "PUT" : "POST",
               url: antecedentesResponse
-                ? antecedentesResponse
+                ? "QuestionnaireResponse/" + antecedentesResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -298,7 +288,7 @@ export default {
             request: {
               method: interconsultaResponse ? "PUT" : "POST",
               url: interconsultaResponse
-                ? interconsultaResponse
+                ? "QuestionnaireResponse/" + interconsultaResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -307,7 +297,9 @@ export default {
             resource: anexos.resource,
             request: {
               method: anexosResponse ? "PUT" : "POST",
-              url: anexosResponse ? anexosResponse : "QuestionnaireResponse",
+              url: anexosResponse
+                ? "QuestionnaireResponse/" + anexosResponse
+                : "QuestionnaireResponse",
             },
           },
           {
@@ -336,7 +328,7 @@ export default {
                 },
               ],
               subject: {
-                reference: patientString.value,
+                reference: "Patient/" + patientString.value,
               },
               date: new Date(),
               author: [
@@ -442,11 +434,8 @@ export default {
           questionnaireAnexosResponse.value
         );
 
-        let postBundle = await store.dispatch(
-          "questionnairePatient/postBundle",
-          response
-        );
-        if (postBundle.status == 200) {
+        let postBundle = await store.dispatch("bundle/postBundle", response);
+        if (postBundle.status === 201) {
           $q.loading.hide();
           $q.notify({
             color: "green-4",

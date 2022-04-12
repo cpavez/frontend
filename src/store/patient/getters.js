@@ -3,7 +3,7 @@ const getters = {
     return state.patientID;
   },
   getObjectPatient(state) {
-    return state.objectPatient;
+    return state.objectPatient.data;
   },
 };
 
