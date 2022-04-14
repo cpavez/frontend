@@ -911,7 +911,10 @@ export default {
   components: { HeadPatient, Sparkline, VuePdfEmbed, Questionnaire },
   created() {
     const store = useStore();
-    void store.dispatch("questionnaire/getQuestionnaire", 1472);
+    void store.dispatch(
+      "questionnaire/getQuestionnaire",
+      import.meta.env.VITE_RESPUESTA_DERMATOLOGIA
+    );
   },
   setup() {
     const questionnaire = computed(

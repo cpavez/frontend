@@ -3,7 +3,9 @@
     <q-card flat bordered class="my-card">
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <q-card-section>
-          <div class="text-h6">{{ t("person.searchPatient") }}</div>
+          <div class="text-h6">
+            {{ t("person.searchPatient") }}
+          </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -861,6 +863,8 @@ export default {
     const store = useStore();
     void store.dispatch("questionnaire/getQuestionnaireAdmision", null);
     LocalStorage.set("PatientID", "");
+
+    console.log("variable env ", import.meta.env.VITE_ADMISION);
   },
   setup: function () {
     const questionnaire = computed(
@@ -1100,7 +1104,10 @@ export default {
             resource: {
               resourceType: "QuestionnaireResponse",
               status: "completed",
-              questionnaire: "https://qa-cdr.minsal.cl/Questionnaire/1503",
+              questionnaire:
+                import.meta.env.VITE_BASE_URL +
+                "/Questionnaire/" +
+                import.meta.env.VITE_ADMISION,
               authored: new Date(),
               subject: {
                 reference: "urn:uuid:b7748984-4e13-44a3-84a9-07f824552d25",

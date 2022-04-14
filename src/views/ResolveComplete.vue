@@ -1176,7 +1176,7 @@ export default {
     const notif1 = ref(false);
     const formData = ref({});
     const composition = ref({});
-    const questionnaireId = ref("1472");
+    const questionnaireId = ref(import.meta.env.VITE_RESPUESTA_DERMATOLOGIA);
     const questionnaireResponse = ref("");
     const status = ref("draft");
 

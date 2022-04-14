@@ -13,7 +13,7 @@
           @update:modelValue="
             (newValue) => (questionnaireExamenFisico = newValue)
           "
-          questionnaireId="1504"
+          :questionnaireId="EXAMEN_FISICO"
           :patientId="patientString"
           :questionnaireResponse="questionnaireExamenFisicoResponse"
         />
@@ -24,7 +24,7 @@
           @update:modelValue="
             (newValue) => (questionnaireAntecedentes = newValue)
           "
-          questionnaireId="1505"
+          :questionnaireId="ANTECEDENTES"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAntecedentesResponse"
         />
@@ -40,7 +40,7 @@
           @update:modelValue="
             (newValue) => (questionnaireInterconsultaDermatologia = newValue)
           "
-          questionnaireId="1506"
+          :questionnaireId="DERMATOLOGIA"
           :patientId="patientString"
           :questionnaireResponse="
             questionnaireInterconsultaDermatologiaResponse
@@ -53,7 +53,7 @@
           v-if="questionnaireAnexosResponse || compositionID === ''"
           :modelValue="questionnaireAnexos"
           @update:modelValue="(newValue) => (questionnaireAnexos = newValue)"
-          questionnaireId="1507"
+          :questionnaireId="ANEXOS_DERMATOLOGIA"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAnexosResponse"
         />
@@ -133,6 +133,10 @@ export default {
     const questionnaireInterconsultaDermatologia = ref({});
     const questionnaireAnexos = ref({});
     const status = ref("draft");
+    const EXAMEN_FISICO = import.meta.env.VITE_EXAMEN_FISICO;
+    const ANTECEDENTES = import.meta.env.VITE_ANTECEDENTES;
+    const DERMATOLOGIA = import.meta.env.VITE_DERMATOLOGIA;
+    const ANEXOS_DERMATOLOGIA = import.meta.env.VITE_ANEXOS_DERMATOLOGIA;
     const compositionID = ref(
       route?.currentRoute?._value?.params?.id
         ? route.currentRoute._value.params.id
@@ -465,6 +469,10 @@ export default {
       questionnaireAnexos,
       questionnaireAnexosResponse,
       status,
+      EXAMEN_FISICO,
+      ANTECEDENTES,
+      ANEXOS_DERMATOLOGIA,
+      DERMATOLOGIA,
     };
   },
 };
