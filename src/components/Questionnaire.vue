@@ -39,7 +39,7 @@ onMounted(async () => {
     );
     if (
       questionnaireResponse.questionnaire ===
-      "http://192.168.60.123:8080/fhir/Questionnaire/1359"
+      "https://qa-cdr.minsal.cl/Questionnaire/1359"
     ) {
       newObservation.value = questionnaireResponse.subject.reference;
     }
@@ -283,7 +283,7 @@ watchEffect(async () => {
     );
     if (
       questionnaireResponse.questionnaire ===
-      "http://192.168.60.123:8080/fhir/Questionnaire/1359"
+      "https://qa-cdr.minsal.cl/Questionnaire/1359"
     ) {
       newObservation.value = questionnaireResponse.subject.reference;
     }
@@ -640,8 +640,7 @@ async function createObject() {
       resourceType: "QuestionnaireResponse",
       status: props.status === "completed" ? "completed" : "in-progress",
       questionnaire:
-        "http://192.168.60.123:8080/fhir/Questionnaire/" +
-        props.questionnaireId,
+        "https://qa-cdr.minsal.cl/Questionnaire/" + props.questionnaireId,
       authored: new Date(),
       subject: {
         reference: "Patient/" + props.patientId,

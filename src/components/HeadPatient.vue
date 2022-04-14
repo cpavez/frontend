@@ -22358,7 +22358,7 @@ function buscarOtroPaciente() {
           <q-item-label
             ><span class="text-weight-medium">Paciente</span>
             <span class="text-grey-8"
-              >{{
+              >&nbsp;{{
                 patient?.name?.filter((name) => {
                   return name.use === "official";
                 })[0]?.family
@@ -22380,9 +22380,9 @@ function buscarOtroPaciente() {
         <q-item-section class="col-xs-5 col-md-5" side style="color: black">
           <q-item-label
             ><span class="text-weight-medium">Edad</span>
-            <span class="text-grey-8"
-              >{{
-                patient?.birthDate ? calcularEdad(patient?.birthDate) : ""
+            <span class="text-grey-8">
+              {{
+                patient?.birthDate ? " " + calcularEdad(patient?.birthDate) : ""
               }}
               ({{ patient?.birthDate }})</span
             ></q-item-label

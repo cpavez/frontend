@@ -1,113 +1,103 @@
 <script setup>
-import {computed, ref, watch, watchEffect} from 'vue'
-import {useStore} from 'vuex'
-import {LocalStorage} from "quasar";
+import { computed, ref, watch, watchEffect } from "vue";
+import { useStore } from "vuex";
+import { Loading, LocalStorage, QSpinnerDots } from "quasar";
 import router from "../router";
 import moment from "moment";
-import 'moment/locale/es'
+import "moment/locale/es";
 
 const props = defineProps({
   category: String,
   title: String,
-  criterio: String
-})
-
-const solveCase = ref([])
-const solveCases = ref([])
-const store = useStore()
-
-
+  criterio: String,
+});
+const visible = ref(false);
+const solveCase = ref([]);
+const solveCases = ref([]);
+const store = useStore();
 
 async function compositions() {
-  solveCase.value = await store.dispatch('questionnairePatient/getComposition', '_include=Composition:subject&category=' + props.category)
-  const composition = solveCase.value.data?.entry?.filter(composition =>{
-    if(composition.search.mode === 'match'){
-      return composition
-    }
-  })
-
-  const arr_service = []
-  if(composition){
-    for (const composition1 of composition) {
-      const sections = composition1.resource.section
-      for (const section of sections){
-        if (section.title === 'Interconsulta') {
-          const response = await store.dispatch('questionnairePatient/getQuestionnaireResponse', section.entry[0].reference);
-          arr_service[composition1.resource.id] = response.data.basedOn[0].reference
-        }
-      }
-    }
-    const arr_pat = []
-    solveCase.value.data?.entry?.filter(patient =>{
-      if(patient.search.mode === 'include'){
-        const index = 'Patient/'+patient.resource.id
-        arr_pat[index] = patient.resource
-      }
-    })
-    const compositionPatiente = composition?.map(composition => {
-      return Object.assign(composition.resource, {'patient': arr_pat[composition.resource.subject.reference]})
-    })
-
-    for (const composition2 of compositionPatiente) {
-      const id = composition2.id
-      const serviceRequest = await store.dispatch('questionnairePatient/getQuestionnaireResponse', arr_service[id]);
-      Object.assign(composition2,{'serviceRequest':serviceRequest.data})
-    }
-
-    solveCases.value = compositionPatiente.filter(composition => {
-      if(props.criterio === ''){
-        if(composition.serviceRequest.status != 'completed' && composition.status === 'final'){
-          return composition
-        }
-      }else{
-        if(composition.serviceRequest.status === 'completed'){
-          return composition
-        }
-      }
-    })
+  if (props.criterio === "") {
+    solveCases.value = await store.dispatch(
+      "cases/setCasesPending",
+      props.category
+    );
+  } else {
+    solveCases.value = await store.dispatch(
+      "cases/setCasesComplete",
+      props.category
+    );
   }
-
-
-
-
+  visible.value = false;
 }
 
 watch(props, (currentValue, oldValue) => {
-  if(props.category != ''){
-    compositions()
+  if (props.category != "") {
+    visible.value = true;
+    compositions();
   }
 });
-
-
 </script>
 
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md" v-if="solveCases?.length > 0">
     <q-list bordered class="rounded-borders">
-      <q-item-label header><q-badge color="blue">{{solveCases.length}}</q-badge> {{title}}</q-item-label>
+      <q-item-label header
+        ><q-badge color="blue">{{ solveCases.length }}</q-badge>
+        {{ title }}</q-item-label
+      >
       <q-separator spaced />
-      <div v-if="solveCases" v-for="(solveCase,i) in solveCases" :key="solveCase.id">
-        <q-item  clickable :to="{ name: (criterio === '')?'solveCaseId':'mySolveCaseId', params: { id: solveCase.id} }">
+      <div v-for="(solveCase, i) in solveCases" :key="solveCase.id">
+        <q-item
+          clickable
+          :to="{
+            name: criterio === '' ? 'solveCaseId' : 'mySolveCaseId',
+            params: { id: solveCase.id },
+          }"
+        >
           <q-item-section avatar>
-            <img src="../assets/img/icono_persona-05.svg">
+            <img src="../assets/img/icono_persona-05.svg" />
           </q-item-section>
 
           <q-item-section>
-            <q-item-label overline>{{solveCase.title}} #{{solveCase.id}}</q-item-label>
-            <q-item-label>{{solveCase.patient?.name?.filter(name=>{return name.use === 'official'})[0]?.family}} {{solveCase.patient?.name?.filter(name=>{return name.use === 'official'})[0]?._family?.extension[0]?.valueString}}, {{solveCase.patient?.name?.filter(name=>{return name.use === 'official'})[0]?.given[0]}}</q-item-label>
+            <q-item-label overline
+              >{{ solveCase.title }} #{{ solveCase.id }}
+              <q-item-label caption
+                >Creación: {{ moment(solveCase.date).format("D/M/YYYY HH:mm") }}
+              </q-item-label>
+              <q-item-label caption>Asignación: </q-item-label>
+            </q-item-label>
+            <q-item-label
+              >{{
+                solveCase.patient?.name?.filter((name) => {
+                  return name.use === "official";
+                })[0]?.family
+              }}
+              {{
+                solveCase.patient?.name?.filter((name) => {
+                  return name.use === "official";
+                })[0]?._family?.extension[0]?.valueString
+              }},
+              {{
+                solveCase.patient?.name?.filter((name) => {
+                  return name.use === "official";
+                })[0]?.given[0]
+              }}</q-item-label
+            >
             <q-item-label caption>Establecimiento</q-item-label>
-          </q-item-section>
-
-          <q-item-section side top>
-            <q-item-label caption>{{moment(solveCase.date).format('D/M/YYYY HH:mm')}}</q-item-label>
+            <q-item-label caption></q-item-label>
           </q-item-section>
         </q-item>
-        <q-separator v-if="(i+1) < solveCases.length" spaced />
+        <q-separator v-if="i + 1 < solveCases.length" spaced />
       </div>
     </q-list>
   </div>
+  <q-inner-loading
+    :showing="visible"
+    label="Cargando..."
+    label-class="text-teal"
+    label-style="font-size: 1.1em"
+  />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

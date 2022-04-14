@@ -14,7 +14,7 @@ const actions = {
   async postAllergy({ commit }, payload) {
     console.log(commit);
     try {
-      const response = await api.postRequest("AllergyIntolerance", payload);
+      const response = await api.postRequest("allergyIntolerance", payload);
       return response;
     } catch (e) {
       return e.response;

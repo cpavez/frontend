@@ -7,6 +7,8 @@ import composition from "./composition";
 import patient from "./patient";
 import alergyIntolerance from "./alergyIntolerance";
 import bundle from "./bundle";
+import cases from "./cases";
+import serviceRequest from "./serviceRequest";
 
 export default createStore({
   state: {},
@@ -21,6 +23,8 @@ export default createStore({
     patient,
     alergyIntolerance,
     bundle,
+    cases,
+    serviceRequest,
     auth,
   },
 });

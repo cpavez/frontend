@@ -3,11 +3,11 @@ import actions from "./actions";
 import getters from "./getters";
 import mutations from "./mutations";
 
-const composition = {
+const cases = {
   namespaced: true,
   actions,
   getters,
   mutations,
   state,
 };
-export default composition;
+export default cases;

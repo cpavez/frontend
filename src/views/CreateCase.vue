@@ -1100,8 +1100,7 @@ export default {
             resource: {
               resourceType: "QuestionnaireResponse",
               status: "completed",
-              questionnaire:
-                "http://192.168.60.123:8080/fhir/Questionnaire/1341",
+              questionnaire: "https://qa-cdr.minsal.cl/Questionnaire/1503",
               authored: new Date(),
               subject: {
                 reference: "urn:uuid:b7748984-4e13-44a3-84a9-07f824552d25",

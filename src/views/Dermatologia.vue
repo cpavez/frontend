@@ -13,7 +13,7 @@
           @update:modelValue="
             (newValue) => (questionnaireExamenFisico = newValue)
           "
-          questionnaireId="1353"
+          questionnaireId="1504"
           :patientId="patientString"
           :questionnaireResponse="questionnaireExamenFisicoResponse"
         />
@@ -24,7 +24,7 @@
           @update:modelValue="
             (newValue) => (questionnaireAntecedentes = newValue)
           "
-          questionnaireId="1359"
+          questionnaireId="1505"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAntecedentesResponse"
         />
@@ -40,7 +40,7 @@
           @update:modelValue="
             (newValue) => (questionnaireInterconsultaDermatologia = newValue)
           "
-          questionnaireId="1360"
+          questionnaireId="1506"
           :patientId="patientString"
           :questionnaireResponse="
             questionnaireInterconsultaDermatologiaResponse
@@ -53,7 +53,7 @@
           v-if="questionnaireAnexosResponse || compositionID === ''"
           :modelValue="questionnaireAnexos"
           @update:modelValue="(newValue) => (questionnaireAnexos = newValue)"
-          questionnaireId="1361"
+          questionnaireId="1507"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAnexosResponse"
         />

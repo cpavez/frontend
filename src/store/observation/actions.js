@@ -3,7 +3,7 @@ const actions = {
   async getObservation({ commit }, payload) {
     console.log(commit);
     try {
-      const response = await api.getRequest("/observation/" + payload);
+      const response = await api.getRequest("observation/" + payload);
       return response;
     } catch (e) {
       return e.response;
@@ -13,7 +13,7 @@ const actions = {
     console.log(commit);
     try {
       const response = await api.getRequest(
-        "/observation/social_history/" + payload
+        "observation/social_history/" + payload
       );
       return response.data;
     } catch (e) {
