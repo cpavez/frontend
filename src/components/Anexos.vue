@@ -1,9 +1,11 @@
 <script setup>
 import Questionnaire from "./Questionnaire.vue";
-import {computed, ref, watch} from "vue";
-import {useStore} from "vuex";
+import { computed, ref, watch } from "vue";
+import { useStore } from "vuex";
 
-components: {Questionnaire}
+components: {
+  Questionnaire;
+}
 
 const props = defineProps({
   questionnaireId: String,
@@ -11,20 +13,24 @@ const props = defineProps({
   questionnaireResponse: String,
   observationResource: String,
   modelValue: Object,
-  status: String
-})
-
-const store = useStore();
-void store.dispatch('questionnairePatient/setQuestionnaireAnexos',props.questionnaireId);
-const questionnaireAnexos = computed(()=>store.getters['questionnairePatient/getQuestionnaireAnexos']);
-
-const emit = defineEmits(['update:modelValue'])
-const formData = ref({})
-
-watch(formData, (currentValue, oldValue) => {
-  emit('update:modelValue',currentValue)
+  status: String,
 });
 
+const store = useStore();
+void store.dispatch(
+  "questionnaire/setQuestionnaireAnexos",
+  props.questionnaireId
+);
+const questionnaireAnexos = computed(
+  () => store.getters["questionnaire/getQuestionnaireAnexos"]
+);
+
+const emit = defineEmits(["update:modelValue"]);
+const formData = ref({});
+
+watch(formData, (currentValue, oldValue) => {
+  emit("update:modelValue", currentValue);
+});
 </script>
 
 <template>
@@ -40,11 +46,19 @@ watch(formData, (currentValue, oldValue) => {
     <q-separator />
     <q-card-section horizontal>
       <q-card-section class="col-12">
-        <Questionnaire :status="status"  :observationResource="observationResource"  :questionnaire="questionnaireAnexos" :modelValue="formData" @update:modelValue="newValue => formData = newValue" :questionnaireId="questionnaireId" :patientId="patientId" :questionnaireResponse="questionnaireResponse"/>
+        <Questionnaire
+          :status="status"
+          :observationResource="observationResource"
+          :questionnaire="questionnaireAnexos"
+          :modelValue="formData"
+          @update:modelValue="(newValue) => (formData = newValue)"
+          :questionnaireId="questionnaireId"
+          :patientId="patientId"
+          :questionnaireResponse="questionnaireResponse"
+        />
       </q-card-section>
     </q-card-section>
   </q-card>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

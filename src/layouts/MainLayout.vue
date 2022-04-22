@@ -13,7 +13,7 @@
         />
 
         <q-toolbar-title v-if="$q.screen.gt.xs" shrink class="row items-center no-wrap">
-          <img height='64' src="../assets/img/img_1.png">
+          <img height='54' src="../assets/img/logo%20salud%20digital_horizontal%20(2).svg">
         </q-toolbar-title>
 
         <q-space />

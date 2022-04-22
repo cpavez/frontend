@@ -1,17 +1,5 @@
-function state(){
-    return {
-        questionnaire:[],
-        questionnaireExamenFisico:[],
-        questionnaireAntecedentes:[],
-        questionnaireInterconsultaDermatologia:[],
-        questionnaireAnexos:[],
-        composition:[],
-        alergias:[],
-        patientID:'',
-        objectPatient:{},
-        questionnaireResponse:'',
-        objectquestionnaireResponse:{}
-    }
+function state() {
+  return {};
 }
 
-export default state
+export default state;

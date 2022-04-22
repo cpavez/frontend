@@ -13,7 +13,7 @@
           @update:modelValue="
             (newValue) => (questionnaireExamenFisico = newValue)
           "
-          questionnaireId="1353"
+          :questionnaireId="EXAMEN_FISICO"
           :patientId="patientString"
           :questionnaireResponse="questionnaireExamenFisicoResponse"
         />
@@ -24,7 +24,7 @@
           @update:modelValue="
             (newValue) => (questionnaireAntecedentes = newValue)
           "
-          questionnaireId="1359"
+          :questionnaireId="ANTECEDENTES"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAntecedentesResponse"
         />
@@ -40,7 +40,7 @@
           @update:modelValue="
             (newValue) => (questionnaireInterconsultaDermatologia = newValue)
           "
-          questionnaireId="1360"
+          :questionnaireId="DERMATOLOGIA"
           :patientId="patientString"
           :questionnaireResponse="
             questionnaireInterconsultaDermatologiaResponse
@@ -53,7 +53,7 @@
           v-if="questionnaireAnexosResponse || compositionID === ''"
           :modelValue="questionnaireAnexos"
           @update:modelValue="(newValue) => (questionnaireAnexos = newValue)"
-          questionnaireId="1361"
+          :questionnaireId="ANEXOS_DERMATOLOGIA"
           :patientId="patientString"
           :questionnaireResponse="questionnaireAnexosResponse"
         />
@@ -95,16 +95,7 @@
 </template>
 
 <script>
-import {
-  computed,
-  defineProps,
-  onBeforeMount,
-  onMounted,
-  onServerPrefetch,
-  ref,
-  watch,
-  watchEffect,
-} from "vue";
+import { computed, onBeforeMount, ref, watchEffect } from "vue";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { Loading, LocalStorage, QSpinnerDots, uid, useQuasar } from "quasar";
@@ -142,6 +133,10 @@ export default {
     const questionnaireInterconsultaDermatologia = ref({});
     const questionnaireAnexos = ref({});
     const status = ref("draft");
+    const EXAMEN_FISICO = import.meta.env.VITE_EXAMEN_FISICO;
+    const ANTECEDENTES = import.meta.env.VITE_ANTECEDENTES;
+    const DERMATOLOGIA = import.meta.env.VITE_DERMATOLOGIA;
+    const ANEXOS_DERMATOLOGIA = import.meta.env.VITE_ANEXOS_DERMATOLOGIA;
     const compositionID = ref(
       route?.currentRoute?._value?.params?.id
         ? route.currentRoute._value.params.id
@@ -152,7 +147,7 @@ export default {
 
     watchEffect(async () => {
       if (LocalStorage.getItem("PatientID") === "") {
-        void store.dispatch("questionnairePatient/setComposition", "");
+        void store.dispatch("composition/setComposition", "");
         $q.notify({
           color: "negativa",
           textColor: "white",
@@ -161,23 +156,20 @@ export default {
         });
         router.push({ name: "createCase" });
       } else {
+        void store.dispatch("patient/setPatientID", patientString.value);
         void store.dispatch(
-          "questionnairePatient/setPatientID",
-          patientString.value
-        );
-        void store.dispatch(
-          "questionnairePatient/setAlergias",
-          "?patient=" + patientString.value.replace("Patient/", "")
+          "alergyIntolerance/setAlergias",
+          patientString.value.replace("Patient/", "")
         );
       }
 
       if (compositionID.value != "") {
         void (await store.dispatch(
-          "questionnairePatient/setComposition",
+          "composition/setComposition",
           compositionID.value
         ));
         const composition = await computed(
-          () => store.getters["questionnairePatient/getComposition"]
+          () => store.getters["composition/getComposition"]
         );
         if (composition) {
           composition.value.section.forEach((section, index) => {
@@ -185,25 +177,25 @@ export default {
               case "Exámen Físico":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireExamenFisicoResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Antecedentes":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireAntecedentesResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Interconsulta":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireInterconsultaDermatologiaResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
               case "Anexos":
                 section.entry.forEach((QuestionnaireResponse, index) => {
                   questionnaireAnexosResponse.value =
-                    QuestionnaireResponse.reference;
+                    QuestionnaireResponse.reference.split("/")[1];
                 });
                 break;
             }
@@ -236,6 +228,8 @@ export default {
       const uuidAnexosResponse = "urn:uuid:" + uid();
       const uuidComposition = "urn:uuid:" + uid();
 
+      console.log(examenFisico.ExamenFisico);
+
       let object = {
         resourceType: "Bundle",
         type: "transaction",
@@ -256,7 +250,7 @@ export default {
             request: {
               method: examenFisicoResponse ? "PUT" : "POST",
               url: examenFisicoResponse
-                ? examenFisicoResponse
+                ? "QuestionnaireResponse/" + examenFisicoResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -278,7 +272,7 @@ export default {
             request: {
               method: antecedentesResponse ? "PUT" : "POST",
               url: antecedentesResponse
-                ? antecedentesResponse
+                ? "QuestionnaireResponse/" + antecedentesResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -298,7 +292,7 @@ export default {
             request: {
               method: interconsultaResponse ? "PUT" : "POST",
               url: interconsultaResponse
-                ? interconsultaResponse
+                ? "QuestionnaireResponse/" + interconsultaResponse
                 : "QuestionnaireResponse",
             },
           },
@@ -307,7 +301,9 @@ export default {
             resource: anexos.resource,
             request: {
               method: anexosResponse ? "PUT" : "POST",
-              url: anexosResponse ? anexosResponse : "QuestionnaireResponse",
+              url: anexosResponse
+                ? "QuestionnaireResponse/" + anexosResponse
+                : "QuestionnaireResponse",
             },
           },
           {
@@ -336,7 +332,7 @@ export default {
                 },
               ],
               subject: {
-                reference: patientString.value,
+                reference: "Patient/" + patientString.value,
               },
               date: new Date(),
               author: [
@@ -442,11 +438,8 @@ export default {
           questionnaireAnexosResponse.value
         );
 
-        let postBundle = await store.dispatch(
-          "questionnairePatient/postBundle",
-          response
-        );
-        if (postBundle.status == 200) {
+        let postBundle = await store.dispatch("bundle/postBundle", response);
+        if (postBundle.status === 201) {
           $q.loading.hide();
           $q.notify({
             color: "green-4",
@@ -476,6 +469,10 @@ export default {
       questionnaireAnexos,
       questionnaireAnexosResponse,
       status,
+      EXAMEN_FISICO,
+      ANTECEDENTES,
+      ANEXOS_DERMATOLOGIA,
+      DERMATOLOGIA,
     };
   },
 };

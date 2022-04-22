@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import questionnairePatient from "./questionnairePatient";
+import observation from "./observation";
 import auth from "./auth";
 import questionnaire from "./questionnaire";
 import questionnaireResponse from "./questionnaireResponse";
@@ -7,6 +7,9 @@ import composition from "./composition";
 import patient from "./patient";
 import alergyIntolerance from "./alergyIntolerance";
 import bundle from "./bundle";
+import cases from "./cases";
+import serviceRequest from "./serviceRequest";
+import snomed from "./snomed";
 
 export default createStore({
   state: {},
@@ -14,13 +17,16 @@ export default createStore({
   mutations: {},
   actions: {},
   modules: {
-    questionnairePatient,
+    observation,
     questionnaire,
     questionnaireResponse,
     composition,
     patient,
     alergyIntolerance,
     bundle,
+    cases,
+    serviceRequest,
+    snomed,
     auth,
   },
 });

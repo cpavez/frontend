@@ -1,13 +1,13 @@
-import state from './state'
-import actions from './actions'
-import getters from './getters'
-import mutations from './mutations'
+import state from "./state";
+import actions from "./actions";
+import getters from "./getters";
+import mutations from "./mutations";
 
-const questionnairePatient = {
-    namespaced: true,
-        actions,
-        getters,
-        mutations,
-        state
-}
-export default questionnairePatient
+const patient = {
+  namespaced: true,
+  actions,
+  getters,
+  mutations,
+  state,
+};
+export default patient;
