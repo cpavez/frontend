@@ -863,8 +863,6 @@ export default {
     const store = useStore();
     void store.dispatch("questionnaire/getQuestionnaireAdmision", null);
     LocalStorage.set("PatientID", "");
-
-    console.log("variable env ", import.meta.env.VITE_ADMISION);
   },
   setup: function () {
     const questionnaire = computed(
@@ -1091,12 +1089,15 @@ export default {
             fullUrl: "urn:uuid:b7748984-4e13-44a3-84a9-07f824552d25",
             resource: patient,
             request: {
-              method: patientID.value != "" ? "PUT" : "POST",
+              method: "PUT",
               url:
                 patientID.value != ""
                   ? patientID.value
                   : "Patient?identifier=http://registrocivil.cl/Validacion/RUN|" +
                     modelPatientVariable.value.numeroDocumento.toUpperCase(),
+              IfNoneExist:
+                "identifier=http://registrocivil.cl/Validacion/RUN|" +
+                modelPatientVariable.value.numeroDocumento.toUpperCase(),
             },
           },
           {

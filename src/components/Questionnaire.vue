@@ -65,6 +65,7 @@ onMounted(async () => {
           repeat = false;
         }
         for (const item of subitem) {
+          console.log(item.answer[0]);
           if (item.answer[0].valueString) {
             if (
               props?.questionnaire?.item?.filter((a) => {
@@ -540,11 +541,24 @@ async function answer(a, b) {
     case "choice":
       if (typeof modelPatientVariable.value[b] === "string") {
         if (modelPatientVariable.value[b]) {
-          return JSON.parse(modelPatientVariable.value[b]);
+          try {
+            return JSON.parse(modelPatientVariable.value[b]);
+          } catch (e) {
+            if (e instanceof SyntaxError) {
+              return modelPatientVariable.value[b];
+            }
+          }
         }
       } else {
         if (modelPatientVariable.value[b]) {
-          return modelPatientVariable.value[b];
+          if (modelPatientVariable.value[b].descriptionId != undefined) {
+            const code = modelPatientVariable.value[b].descriptionId;
+            const display = modelPatientVariable.value[b].texto;
+
+            return { valueCoding: { code: code, display: display } };
+          } else {
+            return modelPatientVariable.value[b];
+          }
         }
       }
 

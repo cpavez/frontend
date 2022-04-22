@@ -601,17 +601,23 @@
             <q-item-section>
               <q-item-label>Diagnostico</q-item-label>
               <q-item-label caption>
-                <q-chat-message
-                  :text="[
-                    questionnaireReferentResponse?.item?.filter((item) => {
-                      if (item.linkId === 'grupoDiagnostico') return item;
-                    })[0]?.item[0]?.answer[0]?.valueString,
-                  ]"
-                  text-html
-                  size="12"
-                  text-color="#676767"
-                  bg-color="blue-grey-1"
-                />
+                {{
+                  questionnaireReferentResponse?.item?.filter((item) => {
+                    if (item.linkId === "grupoDiagnostico") return item;
+                  })[0]?.item[0]?.answer[0]?.valueCoding.display
+                }}
+              </q-item-label>
+              <q-item-label caption>
+                ({{
+                  questionnaireReferentResponse?.item?.filter((item) => {
+                    if (item.linkId === "grupoDiagnosticoDetalle") return item;
+                  })[0]?.item[2]?.answer[0]?.valueString
+                }})
+                {{
+                  questionnaireReferentResponse?.item?.filter((item) => {
+                    if (item.linkId === "grupoDiagnosticoDetalle") return item;
+                  })[0]?.item[3]?.answer[0]?.valueString
+                }}
               </q-item-label>
             </q-item-section>
           </q-item>
@@ -1110,16 +1116,71 @@
           <q-item clickable v-ripple>
             <q-item-section>
               <q-item-label>Diagnóstico</q-item-label>
-              <q-item-label caption> SNOMED </q-item-label>
-              <q-item-label caption> (CIE) DIAGNOSTICO </q-item-label>
-              <q-item-label caption> Complemento diagnostico </q-item-label>
+              <q-item-label caption>
+                {{
+                  questionnaireInterconsultaDermatologiaResponse?.item?.filter(
+                    (item) => {
+                      if (item.linkId === "grupoDiagnostico") return item;
+                    }
+                  )[0]?.item[0]?.answer[0]?.valueCoding.display
+                }}
+              </q-item-label>
+              <q-item-label caption>
+                ({{
+                  questionnaireInterconsultaDermatologiaResponse?.item?.filter(
+                    (item) => {
+                      if (item.linkId === "grupoDiagnosticoDetalle")
+                        return item;
+                    }
+                  )[0]?.item[2]?.answer[0]?.valueString
+                }})
+                {{
+                  questionnaireInterconsultaDermatologiaResponse?.item?.filter(
+                    (item) => {
+                      if (item.linkId === "grupoDiagnosticoDetalle")
+                        return item;
+                    }
+                  )[0]?.item[3]?.answer[0]?.valueString
+                }}
+              </q-item-label>
+              <q-item-label caption>
+                <q-chat-message
+                  :text="[
+                    questionnaireInterconsultaDermatologiaResponse?.item?.filter(
+                      (item) => {
+                        if (item.linkId === 'grupoHipotesisDiagnostica')
+                          return item;
+                      }
+                    )[0]?.item[0]?.answer[0]?.valueString,
+                  ]"
+                  text-html
+                  size="12"
+                  text-color="#676767"
+                  bg-color="blue-grey-1"
+                />
+              </q-item-label>
             </q-item-section>
           </q-item>
 
           <q-item clickable v-ripple>
             <q-item-section>
               <q-item-label>Tratamiento Farmacológico</q-item-label>
-              <q-item-label caption> Texto </q-item-label>
+              <q-item-label caption>
+                <q-chat-message
+                  :text="[
+                    questionnaireInterconsultaDermatologiaResponse?.item?.filter(
+                      (item) => {
+                        if (item.linkId === 'grupoTratamientoFarmacologico')
+                          return item;
+                      }
+                    )[0]?.item[0]?.answer[0]?.valueString,
+                  ]"
+                  text-html
+                  size="12"
+                  text-color="#676767"
+                  bg-color="blue-grey-1"
+                />
+              </q-item-label>
             </q-item-section>
           </q-item>
         </q-list>

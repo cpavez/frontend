@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
+import store from "../store";
 
 const props = defineProps({
   modelPatientVariable: Object,
@@ -9,7 +10,7 @@ const props = defineProps({
   index: Number,
 });
 const emit = defineEmits(["update:modelPatientVariable"]);
-
+const terminologia = ref([]);
 function equal(a, b) {
   if (a === b) {
     return true;
@@ -433,6 +434,68 @@ function filterFn(val, update, stringOptions, option) {
     });
   });
 }
+async function filterTerminologico(val, update) {
+  const needle = val.toString().toUpperCase();
+  if (val.length < 3) {
+    terminologia.value = [];
+    return;
+  }
+  const res = await store.dispatch("snomed/obtenerofertatextos", needle);
+  update(() => {
+    if (!res.data) {
+      terminologia.value = [];
+    } else {
+      let arr_terminologia = [];
+      arr_terminologia =
+        res?.data?.respuesta?.resultado?.obtenerOfertaTextosResponse?.return?.ofertaTextoDetalle.map(
+          (detalle) => {
+            return {
+              valueCoding: {
+                code: detalle.descriptionId,
+                display: detalle.texto,
+              },
+            };
+          }
+        );
+      if (
+        res?.data?.respuesta?.resultado?.obtenerOfertaTextosResponse?.return
+          ?.idDescripcionPreferido
+      ) {
+        arr_terminologia.unshift({
+          valueCoding: {
+            code: res.data.respuesta.resultado.obtenerOfertaTextosResponse
+              .return.idDescripcionPreferido,
+            display:
+              res.data.respuesta.resultado.obtenerOfertaTextosResponse.return
+                .textoPreferido,
+          },
+        });
+      }
+      terminologia.value = arr_terminologia;
+    }
+  });
+}
+async function filterTerminologicoDetail(val, update, stringOptions, option) {
+  const descriptionId = props.modelPatientVariable[option].valueCoding.code;
+  props.modelPatientVariable["descriptionId"] = descriptionId;
+
+  await store
+    .dispatch("snomed/obtenerclasificadorunicoCIE10", descriptionId)
+    .then(function (res) {
+      let arr_cie =
+        res?.data?.respuesta?.resultado?.obtenerClasificadorUnicoResponse
+          ?.return;
+      props.modelPatientVariable["codigo_cie10"] = arr_cie["id"];
+      props.modelPatientVariable["descripcion_cie10"] = arr_cie["descripcion"];
+    });
+
+  await store
+    .dispatch("snomed/obtenerexpresionsnomed", descriptionId)
+    .then(function (res) {
+      props.modelPatientVariable["snomedId"] =
+        res?.data?.respuesta?.resultado?.obtenerExpresionSnomedResponse?.return;
+    });
+}
 
 watch(props.modelPatientVariable, (currentValue, oldValue) => {
   emit("update:modelPatientVariable", props.modelPatientVariable);
@@ -736,7 +799,8 @@ watch(props.modelPatientVariable, (currentValue, oldValue) => {
         v-if="
           subitem.extension
             .map(
-              (extension) => extension.valueCodeableConcept.text === 'Drop down'
+              (extension) =>
+                extension?.valueCodeableConcept?.text === 'Drop down'
             )
             .toString() === 'true'
         "
@@ -778,15 +842,69 @@ watch(props.modelPatientVariable, (currentValue, oldValue) => {
       </div>
       <div
         style="margin-bottom: 30px !important"
-        v-if="
-          subitem.extension
-            .map(
-              (extension) => extension.valueCodeableConcept.text === 'Check-box'
-            )
-            .toString() === 'true'
+        v-else-if="
+          subitem.extension[0].valueCodeableConcept?.text === 'Auto-complete' &&
+          subitem.extension[1].valueUri ===
+            'https://fhir.loinc.org/ValueSet/LL715-4'
         "
       >
-        <div v-for="option in subitem?.answerOption">
+        <q-select
+          clear-icon="close"
+          clearable
+          outlined
+          use-input
+          hide-selected
+          fill-input
+          v-if="breach(subitem, subitem.linkId, index)"
+          :readonly="subitem.readOnly"
+          :rules="[
+            (val) => (subitem.required ? !!val : true || 'Campo es Requerido'),
+          ]"
+          v-model="
+            modelPatientVariable[
+              multiple || subitem.repeats
+                ? subitem.linkId + '|' + index
+                : subitem.linkId
+            ]
+          "
+          :label="subitem.text"
+          :options="terminologia"
+          :option-value="
+            (option) =>
+              option.valueCoding === undefined ? null : option.valueCoding.code
+          "
+          :option-label="
+            (option) =>
+              option.valueCoding === undefined
+                ? null
+                : option.valueCoding.display
+          "
+          @filter="filterTerminologico"
+          @update:model-value="
+            filterTerminologicoDetail(val, update, terminologia, subitem.linkId)
+          "
+          dense
+          options-dense
+          input-debounce="0"
+        >
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                Sin resultados
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
+      </div>
+      <div
+        style="margin-bottom: 30px !important"
+        v-else-if="
+          subitem.extension.map(
+            (extension) => extension?.valueCodeableConcept?.text === 'Check-box'
+          )
+        "
+      >
+        <div v-for="(option, i) in subitem?.answerOption" :key="i">
           <q-checkbox
             v-model="
               modelPatientVariable[

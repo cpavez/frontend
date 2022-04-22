@@ -9,6 +9,7 @@ import alergyIntolerance from "./alergyIntolerance";
 import bundle from "./bundle";
 import cases from "./cases";
 import serviceRequest from "./serviceRequest";
+import snomed from "./snomed";
 
 export default createStore({
   state: {},
@@ -25,6 +26,7 @@ export default createStore({
     bundle,
     cases,
     serviceRequest,
+    snomed,
     auth,
   },
 });
