@@ -3,7 +3,9 @@
     <q-card flat bordered class="my-card">
       <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md">
         <q-card-section>
-          <div class="text-h6">{{ t("person.searchPatient") }}</div>
+          <div class="text-h6">
+            {{ t("person.searchPatient") }}
+          </div>
         </q-card-section>
 
         <q-card-section class="q-pt-none">
@@ -1087,12 +1089,15 @@ export default {
             fullUrl: "urn:uuid:b7748984-4e13-44a3-84a9-07f824552d25",
             resource: patient,
             request: {
-              method: patientID.value != "" ? "PUT" : "POST",
+              method: "PUT",
               url:
                 patientID.value != ""
                   ? patientID.value
                   : "Patient?identifier=http://registrocivil.cl/Validacion/RUN|" +
                     modelPatientVariable.value.numeroDocumento.toUpperCase(),
+              IfNoneExist:
+                "identifier=http://registrocivil.cl/Validacion/RUN|" +
+                modelPatientVariable.value.numeroDocumento.toUpperCase(),
             },
           },
           {
@@ -1101,7 +1106,9 @@ export default {
               resourceType: "QuestionnaireResponse",
               status: "completed",
               questionnaire:
-                "http://192.168.60.123:8080/fhir/Questionnaire/1341",
+                import.meta.env.VITE_BASE_URL +
+                "/Questionnaire/" +
+                import.meta.env.VITE_ADMISION,
               authored: new Date(),
               subject: {
                 reference: "urn:uuid:b7748984-4e13-44a3-84a9-07f824552d25",
@@ -1168,11 +1175,6 @@ export default {
                 message: "El run no es Valido",
               });
             } else {
-              /*const arrQuestionnaireResponse = await store.dispatch(
-                "questionnaireResponse/getQuestionnaireResponsePatient",
-                modelPatientVariable.value[e].toUpperCase() +
-                  "&questionnaire=http://192.168.60.123:8080/fhir/Questionnaire/1341"
-              );*/
               const arrQuestionnaireResponse = await store.dispatch(
                 "questionnaireResponse/findQuestionnaireResponseAdmisionByPatientIdentifir",
                 modelPatientVariable.value[e].toUpperCase()
@@ -1568,9 +1570,10 @@ export default {
         } else {
           $q.loading.hide();
           showCelulas.value = true;
+          console.log(postBundle);
           void store.dispatch(
             "patient/setPatientID",
-            postBundle.data.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location.split("/")[1]
           );
           void store.dispatch(
             "alergyIntolerance/setAlergias",
@@ -1578,15 +1581,16 @@ export default {
           );
           void store.dispatch(
             "questionnaireResponse/setQuestionnaireRespoonse",
-            postBundle.data.data.entry[1].response.location
+            postBundle.data.data.entry[1].response.location.split("/")[1]
           );
 
           LocalStorage.set(
             "PatientID",
-            postBundle.data.data.entry[0].response.location
+            postBundle.data.data.entry[0].response.location.split("/")[1]
           );
 
-          patientID.value = postBundle.data.data.entry[0].response.location;
+          patientID.value =
+            postBundle.data.data.entry[0].response.location.split("/")[1];
           $q.notify({
             color: "green-4",
             textColor: "white",
