@@ -224,11 +224,12 @@ export default {
       const uuidAntecedentes = "urn:uuid:" + uid();
       const uuidAntecedentesResponse = "urn:uuid:" + uid();
       const uuidIntercosulta = "urn:uuid:" + uid();
+      const uuidEncounter = "urn:uuid:" + uid();
       const uuidIntercosultaResponse = "urn:uuid:" + uid();
       const uuidAnexosResponse = "urn:uuid:" + uid();
       const uuidComposition = "urn:uuid:" + uid();
 
-      console.log(examenFisico.ExamenFisico);
+      console.log("interconsultaaaaaaaaa", interconsulta);
 
       let object = {
         resourceType: "Bundle",
@@ -285,10 +286,18 @@ export default {
             },
           },
           {
-            fullUrl: uuidIntercosultaResponse,
-            resource: Object.assign(interconsulta.resource, {
+            fullUrl: uuidEncounter,
+            resource: Object.assign(interconsulta.Encounter, {
               basedOn: [{ reference: uuidIntercosulta }],
             }),
+            request: {
+              method: "POST",
+              url: "Encounter",
+            },
+          },
+          {
+            fullUrl: uuidIntercosultaResponse,
+            resource: interconsulta.resource,
             request: {
               method: interconsultaResponse ? "PUT" : "POST",
               url: interconsultaResponse
@@ -333,6 +342,9 @@ export default {
               ],
               subject: {
                 reference: "Patient/" + patientString.value,
+              },
+              encounter: {
+                reference: uuidEncounter,
               },
               date: new Date(),
               author: [
