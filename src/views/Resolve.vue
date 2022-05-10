@@ -31,16 +31,14 @@
                       <div class="api-row__value"><b>Peso</b></div>
                     </div>
                     <sparkline
-                      :data="[88, 84, 82, 80, 84, 85]"
+                      :data="weight_history.data ? weight_history.data : []"
                       largo="120"
                       :ancho="'25'"
                     ></sparkline>
                     {{
-                      questionnaireExamenFisicoResponse?.item?.filter(
-                        (item) => {
-                          if (item.linkId === "grupoPeso") return item;
-                        }
-                      )[0]?.item[0]?.answer[0]?.valueInteger
+                      weight_history.data
+                        ? weight_history.data[weight_history?.data.length - 1]
+                        : ""
                     }}
                     Kg
                     <div class="api-row__item col-xs-12 col-sm-12 q-py-xs">
@@ -984,6 +982,7 @@ export default {
         ? route.currentRoute._value.params.id
         : ""
     );
+    const weight_history = ref([]);
     const questionnaireExamenFisicoResponse = ref("");
     const questionnaireAntecedentesResponse = ref("");
     const questionnaireInterconsultaDermatologiaResponse = ref("");
@@ -993,7 +992,7 @@ export default {
     const notif1 = ref(false);
     const formData = ref({});
     const composition = ref({});
-    const questionnaireId = ref("1672");
+    const questionnaireId = ref(import.meta.env.VITE_RESPUESTA_DERMATOLOGIA);
     const questionnaireResponse = ref("");
     const status = ref("draft");
 
@@ -1010,6 +1009,7 @@ export default {
         );
         patientString.value =
           composition.value.value.subject.reference.split("/")[1];
+
         if (composition.value) {
           void store.dispatch(
             "patient/setPatientID",
@@ -1071,6 +1071,10 @@ export default {
                 break;
             }
           }
+          weight_history.value = await store.dispatch(
+            "observation/getObservationsWeigthHistoryByPatient",
+            patientString.value
+          );
         } else {
           questionnaireExamenFisicoResponse.value = "";
           questionnaireAntecedentesResponse.value = "";
@@ -1212,6 +1216,7 @@ export default {
       questionnaireId,
       questionnaireResponse,
       questionnaire,
+      weight_history,
     };
   },
 };

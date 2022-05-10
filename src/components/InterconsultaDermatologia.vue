@@ -96,8 +96,63 @@ function serviceRequest(currentValue) {
   emit("update:modelValue", currentValue);
 }
 
+function encounter(currentValue) {
+  const encounter = {
+    resourceType: "Encounter",
+    text: {
+      status: "generated",
+      div: '<div xmlns="http://www.w3.org/1999/xhtml"><p><b>Encuentro de Interconsulta Dermatología</b></p></div>',
+    },
+    identifier: [
+      {
+        system: "http://www.deis.cl/",
+        value: "01-0001-001",
+      },
+    ],
+    status: "in-progress",
+    intent: "order",
+    class: {
+      system: "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+      code: "AMB",
+      display: "ambulatorio",
+    },
+    categotypery: [
+      {
+        coding: [
+          {
+            system: "http://snomed.info/sct",
+            code: "11429006",
+            display: "Consultation",
+          },
+        ],
+        text: "Consulta Ambulatoria",
+      },
+    ],
+    priority: currentValue.data.prioridad?.valueCoding?.code,
+    subject: {
+      reference: "Patient/" + props.patientId,
+    },
+    reasonCode: [
+      {
+        coding: [
+          {
+            system: "http://snomed.info/sct",
+            code: "11429006",
+            display: "Consultation",
+          },
+        ],
+        text: "Consulta Ambulatoria",
+      },
+    ],
+  };
+  const object = { Encounter: encounter };
+  Object.assign(currentValue, object);
+  emit("update:modelValue", currentValue);
+}
+
 watch(formData, (currentValue, oldValue) => {
   serviceRequest(currentValue);
+  encounter(currentValue);
 });
 </script>
 

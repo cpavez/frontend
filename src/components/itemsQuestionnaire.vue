@@ -844,8 +844,7 @@ watch(props.modelPatientVariable, (currentValue, oldValue) => {
         style="margin-bottom: 30px !important"
         v-else-if="
           subitem.extension[0].valueCodeableConcept?.text === 'Auto-complete' &&
-          subitem.extension[1].valueUri ===
-            'https://fhir.loinc.org/ValueSet/LL715-4'
+          subitem.extension[1].valueUrl === 'https://www.snomed.org/'
         "
       >
         <q-select
