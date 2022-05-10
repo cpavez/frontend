@@ -31,16 +31,14 @@
                       <div class="api-row__value"><b>Peso</b></div>
                     </div>
                     <sparkline
-                      :data="[88, 84, 82, 80, 84, 85]"
+                      :data="weight_history.data ? weight_history.data : []"
                       largo="120"
                       :ancho="'25'"
                     ></sparkline>
                     {{
-                      questionnaireExamenFisicoResponse?.item?.filter(
-                        (item) => {
-                          if (item.linkId === "grupoPeso") return item;
-                        }
-                      )[0]?.item[0]?.answer[0]?.valueInteger
+                      weight_history.data
+                        ? weight_history.data[weight_history?.data.length - 1]
+                        : ""
                     }}
                     Kg
                     <div class="api-row__item col-xs-12 col-sm-12 q-py-xs">
@@ -1208,12 +1206,8 @@ export default {
   components: { HeadPatient, Sparkline, VuePdfEmbed, Questionnaire },
   created() {
     const store = useStore();
-    void store.dispatch("questionnaire/getQuestionnaire", 1472);
   },
   setup() {
-    const questionnaire = computed(
-      () => store.getters["questionnaire/getQuestionnaire"]
-    );
     const store = useStore();
     const $q = useQuasar();
     const route = useRouter();
@@ -1228,6 +1222,7 @@ export default {
         ? route.currentRoute._value.params.url
         : undefined
     );
+    const weight_history = ref([]);
     const questionnaireExamenFisicoResponse = ref("");
     const questionnaireAntecedentesResponse = ref("");
     const questionnaireInterconsultaDermatologiaResponse = ref("");
@@ -1254,6 +1249,7 @@ export default {
         );
         patientString.value =
           composition.value.value.subject.reference.split("/")[1];
+
         if (composition.value) {
           void store.dispatch(
             "patient/setPatientID",
@@ -1317,6 +1313,10 @@ export default {
                 break;
             }
           }
+          weight_history.value = await store.dispatch(
+            "observation/getObservationsWeigthHistoryByPatient",
+            patientString.value
+          );
         } else {
           questionnaireExamenFisicoResponse.value = "";
           questionnaireAntecedentesResponse.value = "";
@@ -1459,8 +1459,8 @@ export default {
       formData,
       questionnaireId,
       questionnaireResponse,
-      questionnaire,
       url_to_props,
+      weight_history,
     };
   },
 };

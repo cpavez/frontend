@@ -20,6 +20,28 @@ const actions = {
       return e.response;
     }
   },
+  async getObservationsSignosVitalesByPatient({ commit }, payload) {
+    console.log(commit);
+    try {
+      const response = await api.getRequest(
+        "observation/signos_vitales/" + payload
+      );
+      return response.data;
+    } catch (e) {
+      return e.response;
+    }
+  },
+  async getObservationsWeigthHistoryByPatient({ commit }, payload) {
+    console.log(commit);
+    try {
+      const response = await api.getRequest(
+        "observation/weight_history/" + payload
+      );
+      return response.data;
+    } catch (e) {
+      return e.response;
+    }
+  },
 };
 
 export default actions;
